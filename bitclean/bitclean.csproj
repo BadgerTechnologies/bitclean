@@ -91,6 +91,8 @@
     <Compile Include="gtk-gui\bitclean.UI.Chart.cs" />
     <Compile Include="UI\ChartConfiguration.cs" />
     <Compile Include="gtk-gui\bitclean.UI.ChartConfiguration.cs" />
+    <Compile Include="Systems\learning\functions.cs" />
+    <Compile Include="gtk-gui\bitclean.Systems.learning.learningtypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Systems\" />

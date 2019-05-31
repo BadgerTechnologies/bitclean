@@ -124,10 +124,14 @@ namespace bitclean
             openDialog.Destroy();
 
             // file dialog success, load xml data into memory and populate the treeview
-            if (result != null) {
-                try {
+            if (result != null)
+            {
+                try
+                {
                     GetXMLData(result);
-                } catch(Exception excp) {
+                }
+                catch (Exception excp)
+                {
                     Console.WriteLine(excp.Message);
                 }
 
@@ -188,13 +192,16 @@ namespace bitclean
             // add chart objects to chart display and get statistics on each chart object
             foreach (ChartObject obj in objects)
             {
-                try {
+                try
+                {
                     if (obj.decision == "object") // i screwed up my naming convention and don't feel like regenerating the data
                         obj.decision = "structure";
 
                     store.AppendValues(obj.tag, obj.decision, obj.size, obj.avghue, obj.density, obj.edgeratio, obj.neighbors.Count, 0);
                     StatsTreeViews(obj);
-                } catch(Exception excp) {
+                }
+                catch (Exception excp)
+                {
                     Console.WriteLine(excp.Message);
                 }
             }
@@ -428,6 +435,21 @@ namespace bitclean
             UI.Chart chart = new UI.Chart(objectdata, configuration, datatree.Columns);
             chart.Show();
 
+        }
+
+        protected void RunSifter(object sender, EventArgs e)
+        {
+            if (dustcount == 0)
+                return;
+
+            AttributeStatistics[] stats =
+            {
+                dustSizeStats,
+                dustEdgeratioStats,
+                dustDensityStats
+            };
+
+            Sifter sifter = new Sifter(stats);
         }
     }
 }

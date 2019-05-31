@@ -1,12 +1,16 @@
 ﻿<Properties StartupConfiguration="{EE50866A-2AAE-4F81-93E0-AE40FC35D191}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="bitclean/UI/Chart.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="bitclean/UI/Diagnostics.cs">
     <Files>
-      <File FileName="bitclean/UI/MainWindow.cs" Line="15" Column="6" />
-      <File FileName="bitclean/UI/UItypes.cs" Line="14" Column="45" />
-      <File FileName="bitclean/UI/Diagnostics.cs" Line="186" Column="36" />
-      <File FileName="bitclean/UI/Chart.cs" Line="6" Column="34" />
-      <File FileName="bitclean/UI/ChartConfiguration.cs" Line="47" Column="85" />
+      <File FileName="bitclean/UI/MainWindow.cs" Line="15" Column="6" NotebookId="1" />
+      <File FileName="bitclean/UI/Diagnostics.cs" Line="186" Column="23" NotebookId="1" />
     </Files>
+    <FloatingWindows>
+      <FloatingWindow WindowId="1" X="1920" Y="24" Width="1920" Height="1056">
+        <Files>
+          <File FileName="bitclean/Systems/learning/sifter.cs" Line="1" Column="1" />
+        </Files>
+      </FloatingWindow>
+    </FloatingWindows>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
@@ -14,9 +18,10 @@
             <Node name="bitclean" expanded="True">
               <Node name="Systems" expanded="True">
                 <Node name="bitclean" expanded="True" />
+                <Node name="learning" expanded="True" />
               </Node>
               <Node name="UI" expanded="True">
-                <Node name="Chart.cs" selected="True" />
+                <Node name="Diagnostics.cs" selected="True" />
               </Node>
             </Node>
           </Node>

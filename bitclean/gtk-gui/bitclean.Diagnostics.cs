@@ -20,6 +20,10 @@ namespace bitclean
 
 		private global::Gtk.Action GenerateChartAction;
 
+		private global::Gtk.Action LearningAction;
+
+		private global::Gtk.Action RunSifterAction;
+
 		private global::Gtk.VBox vbox3;
 
 		private global::Gtk.MenuBar menubar2;
@@ -77,6 +81,12 @@ namespace bitclean
 			this.GenerateChartAction = new global::Gtk.Action("GenerateChartAction", global::Mono.Unix.Catalog.GetString("Generate Chart"), null, null);
 			this.GenerateChartAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Generate Chart");
 			w1.Add(this.GenerateChartAction, null);
+			this.LearningAction = new global::Gtk.Action("LearningAction", global::Mono.Unix.Catalog.GetString("Learning"), null, null);
+			this.LearningAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Learning");
+			w1.Add(this.LearningAction, null);
+			this.RunSifterAction = new global::Gtk.Action("RunSifterAction", global::Mono.Unix.Catalog.GetString("Run Sifter"), null, null);
+			this.RunSifterAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Run Sifter");
+			w1.Add(this.RunSifterAction, null);
 			this.UIManager.InsertActionGroup(w1, 0);
 			this.AddAccelGroup(this.UIManager.AccelGroup);
 			this.Name = "bitclean.Diagnostics";
@@ -87,7 +97,7 @@ namespace bitclean
 			this.vbox3.Name = "vbox3";
 			this.vbox3.Spacing = 6;
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString(@"<ui><menubar name='menubar2'><menu name='FileAction1' action='FileAction1'><menuitem name='LoadDataAction1' action='LoadDataAction1'/></menu><menu name='ChartsAction' action='ChartsAction'><menuitem name='ConfigureAction' action='ConfigureAction'/><menuitem name='GenerateChartAction' action='GenerateChartAction'/></menu></menubar></ui>");
+			this.UIManager.AddUiFromString(@"<ui><menubar name='menubar2'><menu name='FileAction1' action='FileAction1'><menuitem name='LoadDataAction1' action='LoadDataAction1'/></menu><menu name='ChartsAction' action='ChartsAction'><menuitem name='ConfigureAction' action='ConfigureAction'/><menuitem name='GenerateChartAction' action='GenerateChartAction'/></menu><menu name='LearningAction' action='LearningAction'><menuitem name='RunSifterAction' action='RunSifterAction'/></menu></menubar></ui>");
 			this.menubar2 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget("/menubar2")));
 			this.menubar2.Name = "menubar2";
 			this.vbox3.Add(this.menubar2);
@@ -201,6 +211,7 @@ namespace bitclean
 			this.LoadDataAction1.Activated += new global::System.EventHandler(this.LoadXMLData);
 			this.ConfigureAction.Activated += new global::System.EventHandler(this.OpenChartConfiguration);
 			this.GenerateChartAction.Activated += new global::System.EventHandler(this.GenerateChart);
+			this.RunSifterAction.Activated += new global::System.EventHandler(this.RunSifter);
 		}
 	}
 }

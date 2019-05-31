@@ -48,6 +48,17 @@
         <property name="ShortLabel" translatable="yes">Generate Chart</property>
         <signal name="Activated" handler="GenerateChart" />
       </action>
+      <action id="LearningAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Learning</property>
+        <property name="ShortLabel" translatable="yes">Learning</property>
+      </action>
+      <action id="RunSifterAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Run Sifter</property>
+        <property name="ShortLabel" translatable="yes">Run Sifter</property>
+        <signal name="Activated" handler="RunSifter" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">Diagnostics</property>
@@ -66,6 +77,9 @@
               <node type="Menu" action="ChartsAction">
                 <node type="Menuitem" action="ConfigureAction" />
                 <node type="Menuitem" action="GenerateChartAction" />
+              </node>
+              <node type="Menu" action="LearningAction">
+                <node type="Menuitem" action="RunSifterAction" />
               </node>
             </node>
           </widget>
@@ -352,6 +366,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Label" translatable="yes">Tag</property>
+                <property name="Active">True</property>
                 <property name="DrawIndicator">True</property>
                 <property name="HasLabel">True</property>
                 <property name="UseUnderline">True</property>
@@ -479,6 +494,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Label" translatable="yes">Tag</property>
+                <property name="Active">True</property>
                 <property name="DrawIndicator">True</property>
                 <property name="HasLabel">True</property>
                 <property name="UseUnderline">True</property>
@@ -711,6 +727,14 @@ Logistic</property>
           </packing>
         </child>
       </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="bitclean.Systems.learning.learningtypes" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">learningtypes</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <placeholder />
     </child>
   </widget>
 </stetic-interface>

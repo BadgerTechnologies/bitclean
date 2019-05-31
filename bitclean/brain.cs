@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 /*
- * bitclean: /system/brain.cs
+ * bitclean: /bitclean/brain.cs
  * author: Austin Herman
- * 5/8/2019
+ * 3/20/2019
+ * pseudo neural network - IN PROGRESS
  */
 
-namespace bitclean
+namespace BitClean
 {
-    /// <summary>
-    /// Initialise hyper parameters.
-    /// </summary>
 	public class HyperParameters
 	{
 		public int attributeCount = 0;
@@ -19,16 +20,13 @@ namespace bitclean
 		public int neuronLayerCount = 0;
 	}
 
-    /// <summary>
-    /// Create/Delete/Run Brain functions
-    /// </summary>
 	public class Brain
 	{
 		private List<Neuron> inputlayer;
 		private List<List<Neuron>> neurons;
 		private List<List<Synapse>> synapses;
 		private List<List<int>> weights;
-		public int attributeCount;
+		public int attributeCount = 0;
 
 		public Brain(int numAtttributes)
 		{
@@ -93,11 +91,10 @@ namespace bitclean
 			for (int i = 0; i < attributeCount; i++)
 				inputlayer.Add(new Neuron(new Linear()));
 
-            neurons = new List<List<Neuron>> {
-                inputlayer
-            };
+			neurons = new List<List<Neuron>>();
+			neurons.Add(inputlayer);
 
-            for (int i = 1; i < attributeCount + 1; i++) {
+			for(int i = 1; i < attributeCount + 1; i++) {
 				neurons.Add(new List<Neuron>());
 				for (int j = attributeCount - i; j >= 0; j--)
 					neurons[i].Add(new Neuron(new Linear()));
@@ -148,11 +145,14 @@ namespace bitclean
 
 		// dendrite summation
 		private double sum;
-		private bool calculatedSum;
+		private bool calculatedSum = false;
 
 		private ActivationFunction func;
 
-		public Neuron(ActivationFunction func) { this.func = func; }
+		public Neuron(ActivationFunction func)
+		{
+			this.func = func;
+		}
 		
 		public void CalculateAxon()
 		{
@@ -177,18 +177,19 @@ namespace bitclean
 	{
 		private Neuron transmitter;
 		private Neuron receiver;
-		private readonly int weight;
-		private readonly bool squared;
+		private int weight;
+		private bool squared = false;
 
 		public Synapse(Neuron transmitter, Neuron receiver, int weight)
 		{
 			this.transmitter = transmitter;
 			this.receiver = receiver;
 			this.weight = weight;
-            squared |= weight == 0; // if weight == 0, squared = true
-        }
+			if (weight == 0)
+				squared = true;
+		}
 
-        public void Transmit()
+		public void Transmit()
 		{
 			transmitter.CalculateAxon();
 
@@ -207,4 +208,100 @@ namespace bitclean
 		}
 	}
 
+	#region activation functions
+
+	public abstract class ActivationFunction
+	{
+		public abstract double Activate(int data);
+		public abstract double Activate(double data);
+	}
+
+	public class Linear : ActivationFunction
+	{
+		double slope, offset;
+
+		public Linear()
+		{
+			slope = 1;
+			offset = 0;
+		}
+		public Linear(double slope, double offset)
+		{
+			this.slope = slope;
+			this.offset = offset;
+		}
+		public override double Activate(int data)
+		{
+			return data * slope + offset;
+		}
+		public override double Activate(double data)
+		{
+			return data * slope + offset;
+		}
+	}
+
+	public class RectifiedLinear : ActivationFunction
+	{
+		public override double Activate(int data)
+		{
+			if (data < 0.0)
+				return 0.0;
+			return data;
+		}
+		public override double Activate(double data)
+		{
+			if (data < 0.0)
+				return 0.0;
+			return data;
+		}
+	}
+
+	public class Logistic : ActivationFunction
+	{
+		public double a, b, c;
+
+		public Logistic(double a, double b, double c)
+		{
+			this.a = a;
+			this.b = b;
+			this.c = c;
+		}
+		public Logistic(LogisticParameters p)
+		{
+			a = p.a;
+			b = p.b;
+			c = p.c;
+		}
+		public Logistic()
+		{
+			a = 0;
+			b = 0;
+			c = 0;
+		}
+
+		public override double Activate(int data)
+		{
+			return c / (1 + a * Math.Exp(-data * b));
+		}
+		public override double Activate(double data)
+		{
+			return c / (1 + a * Math.Exp(-data * b));
+		}
+	}
+
+	public class Heaviside : ActivationFunction
+	{
+		public override double Activate(int data)
+		{
+			if (data < 0.0) return 0.0;
+			return 1.0;
+		}
+		public override double Activate(double data)
+		{
+			if (data < 0.0) return 0.0;
+			return 1.0;
+		}
+	}
+
+	#endregion
 }

@@ -48,9 +48,4 @@ namespace bitclean
     }
 
     enum AxisChoice { tag, size, avghue, density, edgeratio, neighbors }
-
-    public struct LogisticParameters
-    {
-        public double a, b, c;
-    }
 }

@@ -18,11 +18,16 @@ namespace bitclean
         readonly double tolerance = .001;
 
 		//	[0] size | [1] edges | [2] density
-		public Sifter(AttributeStatistics[] dustStats) { this.dustStats = dustStats; }
+		public Sifter(AttributeStatistics[] dustStats) 
+        { 
+            this.dustStats = dustStats;
+            SetUpFunctions();
+        }
 
-		public int Sift(double[] data)
+		public int Sift()
 		{
 			int output = 0;
+
 			// calculate size value
 			// calculate edge ratio value
 			// calculate density value
@@ -38,6 +43,8 @@ namespace bitclean
 			sizeLinear = new Linear(1.0 / dustStats[0].avg, -1);
 			sizeLogistic = new Logistic();
 			GenerateLogisticParameters(sizeLogistic, dustStats[0]);
+
+            Console.WriteLine("a:{0}\tb:{1}\tc:{2}", sizeLogistic.a, sizeLogistic.b, sizeLogistic.c);
 			// set up edge ratio piecewise functions
 
 			// set up density inverted piecewise functions
@@ -45,53 +52,46 @@ namespace bitclean
 
 		public void GenerateLogisticParameters(Logistic func, AttributeStatistics stats)
 		{
+            // we want sifter to use the statistics from the object data to generate 
+            // a logistic curve such that the 90% mark is roughly equal to the max
+            // value for this parameter (size, density, edge ratio, hue, etc) and
+            // the 50% mark is roughly equal to zero. This will also force the 10%
+            // mark to equal -(90%)
+
+
 			// set initial generic parameter values
-			func.b = .001;
-			func.c = 2;
-			func.a = Math.Exp(stats.avg * func.b);
+			func.b = .001;  // beta generic
+			func.c = 2;     // c generic
+			func.a = Math.Exp(stats.avg * func.b);  // alpha generic
+            func.offset = -1;
 
-			double ninetyPercentVal;
-			double zeroPercentVal;
+            double bump = .001;
+            double calculated = 0.0;
 
-			do
-			{
-				double calculated = 0.0;
-				do
-				{   // approximate b parameter
-					calculated = func.Activate(stats.max);
-					if (calculated < .9) {
-						// increase func.b
-						func.b += Math.Abs(.9 - calculated) / 2;
-					}
-					else if (calculated > .9) {
-						// decrease func.b
-						func.b -= Math.Abs(.9 - calculated) / 2;
-					}
-				} while (!(calculated > .9 - tolerance && calculated < .9 + tolerance));
+            int attempts = 1000;
 
-				double k = 0.0;
-				do
-				{   // approximate k parameter to calculate a parameter
-					calculated = func.Activate(stats.avg);
-					if (calculated < 0) {
-						// increase k
-						k += Math.Abs(0 - calculated) / 2;
-					}
-					else if (calculated > 0) {
-						// decrease k
-						k -= Math.Abs(0 - calculated) / 2;
-					}
-					func.a = Math.Exp(stats.avg * func.b - k);
-				} while (!(calculated > 0 - tolerance && calculated < 0 + tolerance));
+            while(func.Activate(stats.max) > .9)
+                func.b -= bump;
 
-				// recalculate 90% and 0% values
-				ninetyPercentVal = func.Activate(stats.max);
-				zeroPercentVal = func.Activate(stats.avg);
+            do
+            {
+                attempts--;
+                calculated = func.Activate(stats.max);
 
-				// check each, repeat approximations if either are off
-			} while (!(ninetyPercentVal > .9 - tolerance && ninetyPercentVal < .9 + tolerance) 
-				&& !(zeroPercentVal > 0 - tolerance && zeroPercentVal < 0 + tolerance));
-		}
+                if (calculated < .9)
+                    func.b += bump;
+                else if (calculated > .9)
+                {
+                    func.b -= bump;
+                    bump = bump / 10.0;
+                    func.b += bump;
+                }
 
+                if (attempts < 0) break;
+
+                Console.WriteLine(func.b);
+
+            } while (!(calculated > (.9 - tolerance) && calculated < (.9 + tolerance)));
+        }
 	}
 }
