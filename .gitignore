@@ -1,0 +1,9 @@
+testcases.txt
+bitclean.sln
+/.vs/
+/bitclean/bitclean.sln
+/bitclean/bitclean.csproj
+/bitclean/.vs/
+/bitclean/obj/
+/bitclean/bin/Debug/
+/bitclean/bin/Release/
