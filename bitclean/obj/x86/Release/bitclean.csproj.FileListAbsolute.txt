@@ -1,7 +1,0 @@
-/home/austin/custops/bitclean/bitclean/bin/Release/bitclean.exe
-/home/austin/custops/bitclean/bitclean/bin/Release/NPlot.dll
-/home/austin/custops/bitclean/bitclean/bin/Release/NPlot.Gtk.dll
-/home/austin/custops/bitclean/bitclean/bin/Release/NPlot.Gtk.dll.config
-/home/austin/custops/bitclean/bitclean/obj/x86/Release/bitclean.csproj.CoreCompileInputs.cache
-/home/austin/custops/bitclean/bitclean/obj/x86/Release/bitclean.csproj.CopyComplete
-/home/austin/custops/bitclean/bitclean/obj/x86/Release/bitclean.exe
