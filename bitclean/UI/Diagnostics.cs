@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
+/* /UI/Diagnostics.cs
+ * Diagnostics interface. Allows the user to load object data from an xml file
+ and displays the data along with statistics.
+ */
+
 namespace bitclean
 {
     /// <summary>

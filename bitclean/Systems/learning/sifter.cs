@@ -1,29 +1,38 @@
 ﻿using System;
 
-/*
- * bitclean: /system/sifterbitclean.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/learning/sifter.cs
+ * The sifter class used to sift data based on a given function
  */
 
 namespace bitclean
 {
-
+    /// <summary>
+    /// Sifter.
+    /// </summary>
 	class Sifter
 	{
+        // array of statistics on just the dust data
 		private readonly AttributeStatistics[] dustStats;
         private Linear sizeLinear; // edgeLinear, densityLinear;
         private Logistic sizeLogistic; // edgeLogistic, densityLogistic;
-
+        // tolerance for how far off we can be from our target percentages
         readonly double tolerance = .001;
 
-		//	[0] size | [1] edges | [2] density
-		public Sifter(AttributeStatistics[] dustStats) 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Sifter"/> class.
+        /// [0] size | [1] edges | [2] density
+        /// </summary>
+        /// <param name="dustStats">Dust stats.</param>
+        public Sifter(AttributeStatistics[] dustStats) 
         { 
             this.dustStats = dustStats;
             SetUpFunctions();
         }
 
+        /// <summary>
+        /// Sift the data.
+        /// </summary>
+        /// <returns>The sift.</returns>
 		public int Sift()
 		{
 			int output = 0;
@@ -37,6 +46,9 @@ namespace bitclean
 			return output;
 		}
 
+        /// <summary>
+        /// Sets up size/edge ratio/density piecewise functions.
+        /// </summary>
 		private void SetUpFunctions()
 		{
 			// set up size piecewise functions
@@ -50,6 +62,11 @@ namespace bitclean
 			// set up density inverted piecewise functions
 		}
 
+        /// <summary>
+        /// Automatically generates the logistic parameters.
+        /// </summary>
+        /// <param name="func">Func.</param>
+        /// <param name="stats">Stats.</param>
 		public void GenerateLogisticParameters(Logistic func, AttributeStatistics stats)
 		{
             // we want sifter to use the statistics from the object data to generate 

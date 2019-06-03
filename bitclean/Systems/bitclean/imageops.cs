@@ -1,16 +1,22 @@
 ﻿using System.Drawing;
 
-/*
- * bitclean: /system/imageops.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/imageops.cs
+ * Contains algorithms for parsing through the image's pixels, replacing floor
+ colored pixels with white pixels (for standardization), populating the pixel
+ array, and converting RGB colors to integers.
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Image operations.
+    /// </summary>
     public static class ImageOperations
     {
-		// changes Magenta floor colored pixels from Cloud Compare into white
+        /// <summary>
+        /// Changes Magenta floor colored pixels from Cloud Compare into white
+        /// </summary>
+        /// <param name="bmp">Bmp.</param>
 		public static void ParseImage(ref Bitmap bmp)
 		{
 			for (int y = 0; y < bmp.Height; y++)
@@ -24,6 +30,11 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Populates the pixel array.
+        /// </summary>
+        /// <param name="bmp">Bmp.</param>
+        /// <param name="pixels">Pixels.</param>
         public static void PopulatePixelArray(Bitmap bmp, ref Pixel[] pixels)
         {
             int i = 0;
@@ -50,6 +61,11 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Pushs the pixels in the pixel array to the image.
+        /// </summary>
+        /// <param name="bmp">Bmp.</param>
+        /// <param name="pixels">Pixels.</param>
         public static void PushPixelsToImage(Bitmap bmp, Pixel[] pixels)
 		{
 			// update bmp with pixels stored in pixel array
@@ -63,6 +79,12 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Converts a Color (rgb) to an integer representation (short). Look at
+        /// the documentation for details on this.
+        /// </summary>
+        /// <returns>The to int.</returns>
+        /// <param name="p">P.</param>
 		public static short ColToInt(Color p)
 		{
             short numcolor = 0;

@@ -1,26 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 
-/*
- * bitclean: /system/selection.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/selection.cs
+ * Drives the algorithms for finding an object, filling it in, and finding its 
+ edges
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Selection.
+    /// </summary>
     public class Selection
     {
-        private readonly Pixel[] p;
+        private readonly Pixel[] p; // pixel array
+        // width of the image, total number of pixels in the image
         private readonly int width, total;
-        private ObjectBounds objbounds;
+        private ObjectBounds objbounds; // the bounds of the object
+        // list of all pixels in the buffer and perimeter pixels
         private List<int> buffer, perimeter;
-        private int buffersize;
-        private Node buff;
+        private int buffersize; // size of the buffer
+        private Node buff; // root node of the buffer tree
         private readonly string selection_err = "::SELECTION::error : ";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Selection"/> class.
+        /// </summary>
         Selection() { Console.Write(selection_err + "initialized without pixels\n"); }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Selection"/> class.
+        /// </summary>
+        /// <param name="pixels">Pixels.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="total">Total.</param>
         public Selection(Pixel[] pixels, int width, int total)
         {
             buffer = new List<int>();
@@ -31,6 +44,11 @@ namespace bitclean
             buffersize = 0;
         }
 
+        /// <summary>
+        /// Get the rest of the pixels from starting point id.
+        /// </summary>
+        /// <returns>The get.</returns>
+        /// <param name="id">Identifier.</param>
         public bool Get(int id)
         {
 	        if (CheckPixel(ref p[id])) // check the current pixel
@@ -45,12 +63,19 @@ namespace bitclean
 	        return false;
         }
 
+        /// <summary>
+        /// Iterate through the current buffer of pixels to find more pixels
+        /// </summary>
         private void Iterate()
         {
             for (int i = 0; i < buffersize; i++)
 				NextPixel(buffer[i]); // check neighbors for non-white
         }
 
+        /// <summary>
+        /// Finds the next pixel given the current pixel
+        /// </summary>
+        /// <param name="id">Identifier.</param>
         private void NextPixel(int id)
         {
             if ((id - width - 1) > 0)
@@ -73,6 +98,12 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Checks that the pixel is non-white and not selected, then adds it to
+        /// the buffer.
+        /// </summary>
+        /// <returns><c>true</c>, if pixel was checked, <c>false</c> otherwise.</returns>
+        /// <param name="pixel">Pixel.</param>
         private bool CheckPixel(ref Pixel pixel)
         {
             if (pixel.value != Constants.INT_WHITE) 
@@ -89,6 +120,9 @@ namespace bitclean
             return false;
         }
 
+        /// <summary>
+        /// Fills in the pixels of the found object.
+        /// </summary>
         private void FillPixels()
         {
             Filler fill = new Filler(p, width, total);  // create fill object
@@ -100,6 +134,9 @@ namespace bitclean
 			objbounds = fill.GetBounds();
         }
 
+        /// <summary>
+        /// Finds the edges of the found object.
+        /// </summary>
         private void FindEdges()
         {
             Edge e = new Edge(width, total);
@@ -108,6 +145,9 @@ namespace bitclean
             Edges = e.GetEdges();
         }
 
+        /// <summary>
+        /// Clears the buffer.
+        /// </summary>
         public void ClearBuffer()
         {
             buffer.Clear();
@@ -115,12 +155,28 @@ namespace bitclean
             buff = null;
         }
 
+        /// <summary>
+        /// Gets/Sets the edges.
+        /// </summary>
+        /// <value>The edges.</value>
 		public int Edges { get; private set; }
 
+        /// <summary>
+        /// Gets the buffer.
+        /// </summary>
+        /// <value>The buffer.</value>
 		public ref List<int> Buffer => ref buffer;
 
+        /// <summary>
+        /// Gets the perimeter.
+        /// </summary>
+        /// <value>The perimeter.</value>
         public ref List<int> Perimeter => ref perimeter;
 
+        /// <summary>
+        /// Gets the bounding rectangle of the current object.
+        /// </summary>
+        /// <returns>The bounds.</returns>
         public BoundingRectangle GetBounds()
         {
             return new BoundingRectangle

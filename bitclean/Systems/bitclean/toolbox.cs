@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System;
 using System.Drawing;
 
-/*
- * bitclean: /system/toolbox.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/selection.cs
+ * Holds the highest level functions that drive the cleaning algorithms
  */
 
 namespace bitclean
@@ -21,13 +18,20 @@ namespace bitclean
 		private List<int> perimeter = new List<int>();	// buffer of perimeter id's from the object
 		private List<ObjectData> objdat = new List<ObjectData>();	// list of object data scraped from each object found
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Toolbox"/> class.
+        /// </summary>
+        /// <param name="p">P.</param>
+        /// <param name="dat">Dat.</param>
 		public Toolbox(Pixel[] p, Data dat)
         {
             pixels = p;
 			imgdata = dat;
         }
 
-        // the big boy, iterates through the pixels and drives algorithms
+        /// <summary>
+        /// The big boy, iterates through the pixels and drives algorithms
+        /// </summary>
         public void Run()
         {
             if (pixels == null) {
@@ -93,8 +97,11 @@ namespace bitclean
 			// not finished may delete later idk
         }
 
-		//sets the buffer to be colored with color 'c'
-		private void ColorBuffer(Color c)
+        /// <summary>
+        /// Sets the buffer to be colored with color 'c'
+        /// </summary>
+        /// <param name="c">C.</param>
+        private void ColorBuffer(Color c)
 		{
 			for (int i = 0; i < buffer.Count; i++)
 			{
@@ -105,8 +112,11 @@ namespace bitclean
 			}
 		}
 
-		//sets the edges to be colored with color 'c'
-		private void ColorEdges(Color c)
+        /// <summary>
+        /// Sets the edges to be colored with color 'c'
+        /// </summary>
+        /// <param name="c">C.</param>
+        private void ColorEdges(Color c)
         {
 			for (int i = 0; i < perimeter.Count; i++)
 			{
@@ -116,8 +126,11 @@ namespace bitclean
 			}
 		}
 
-		// calculates average hue or color of the buffer
-		private double GetAverageHue()
+        /// <summary>
+        /// Calculates average hue or color of the buffer
+        /// </summary>
+        /// <returns>The average hue.</returns>
+        private double GetAverageHue()
 		{
 			double avg = 0;
 			for (int i = 0; i < buffer.Count; i++) {
@@ -127,8 +140,11 @@ namespace bitclean
 			return avg / buffer.Count;
         }
 
-		// returns the percentage of non-white pixels in the buffer
-		private double GetValueDensity()
+        /// <summary>
+        /// Returns the percentage of non-white pixels in the buffer
+        /// </summary>
+        /// <returns>The value density.</returns>
+        private double GetValueDensity()
 		{
 			double avg = 0;
 			for (int i = 0; i < buffer.Count; i++) {
@@ -138,6 +154,13 @@ namespace bitclean
 			return avg / buffer.Count * 100;
 		}
 
+        /// <summary>
+        /// Generates the object data.
+        /// </summary>
+        /// <returns>The object data.</returns>
+        /// <param name="tagCount">Tag count.</param>
+        /// <param name="edgeCount">Edge count.</param>
+        /// <param name="objBounds">Object bounds.</param>
 		private ObjectData GenerateObjectData(int tagCount, int edgeCount, BoundingRectangle objBounds)
 		{
 			// create object data with buffer's properties
@@ -172,6 +195,10 @@ namespace bitclean
 			return objdata;
 		}
 
+        /// <summary>
+        /// Searches the buffer for the tag colored pixel.
+        /// </summary>
+        /// <returns><c>true</c>, if object tag was found, <c>false</c> otherwise.</returns>
 		bool FindObjectTag()
 		{
 			for(int i = 0; i < buffer.Count; i++) {
@@ -182,6 +209,10 @@ namespace bitclean
 			return false;
 		}
 
+        /// <summary>
+        /// Gets the object data.
+        /// </summary>
+        /// <returns>The object data.</returns>
 		public List<ObjectData> GetObjectData()
         {
             return objdat;

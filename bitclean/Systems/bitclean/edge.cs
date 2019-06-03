@@ -1,28 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 
-/*
- * bitclean: /system/edge.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/edge.cs
+ * Contains the Edge class that has various algorithms for finding and 
+ compressing edges of a given pixel buffer.
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Edge.
+    /// </summary>
     class Edge
     {
+        // root node for the selection pixels (entire object)
         private Node sel = new Node();
+        // root node for the perimeter pixels
         private Node per = new Node();
-        private int[] curfield = new int[8];
-        private bool fieldSet;
+        private int[] curfield = new int[8]; // the current vector field
+        private bool fieldSet; // whether or not the field has been set yet
+        // list of perimeter pixels that were found
         private List<int> perimeter = new List<int>();
+        // the current stack of pixels to be searched
         private List<int> stack = new List<int>();
+        // width of image and total number of pixels
         private readonly int width, total;
+        // number of edges calculated, number of perimeter pixels found, current field tolerance
         private int numEdges, perimSize, tolerance;
         private readonly string edge_warn = "::EDGE::warning : ";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Edge"/> 
+        /// class.
+        /// </summary>
         Edge() { Console.WriteLine(edge_warn + "edge initialized with no pixels\n"); }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Edge"/> 
+        /// class.
+        /// </summary>
+        /// <param name="w">The width.</param>
+        /// <param name="t">T.</param>
         public Edge(int w, int t)
         {
             sel = null;
@@ -35,6 +53,12 @@ namespace bitclean
             total = t;
         }
 
+        /// <summary>
+        /// Begin detecting the perimiter pixels in the mselection and buffer 
+        /// data structures.
+        /// </summary>
+        /// <param name="mselection">Mselection.</param>
+        /// <param name="buff">Buff.</param>
         public void Detect(List<int> mselection, Node buff)
         {
             sel = buff;
@@ -49,6 +73,10 @@ namespace bitclean
             sel = null;
         }
 
+
+        /// <summary>
+        /// Iterates the current stack of found perimeter pixels to find more.
+        /// </summary>
         private void IterateEdges()
         {
             while (stack.Count != 0)
@@ -59,6 +87,11 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Gets the eight neighboring pixels surrounding pixel at id.
+        /// </summary>
+        /// <returns>The octan.</returns>
+        /// <param name="id">Identifier.</param>
         private Octan GetOctan(int id)
         {
 			Octan oct = new Octan();
@@ -84,6 +117,12 @@ namespace bitclean
 
             return oct;
         }
+
+        /// <summary>
+        /// Checks the neighboring pixels in the octan for perimeter pixels.
+        /// </summary>
+        /// <param name="oct">Oct.</param>
+        /// <param name="id">Identifier.</param>
         private void CheckNeighbors(Octan oct, int id)
         {
             if ((id - width) > 0)
@@ -107,6 +146,14 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Check the specified centerpixel given neighbors neigh1, neigh2 and 
+        /// direction dir.
+        /// </summary>
+        /// <param name="centerpixel">Centerpixel.</param>
+        /// <param name="neigh1">Neigh1.</param>
+        /// <param name="neigh2">Neigh2.</param>
+        /// <param name="dir">Dir.</param>
         private void Check(int centerpixel, int neigh1, int neigh2, Field dir)
         {
             if (centerpixel != -1 && !(neigh1 != -1 && neigh2 != -1))
@@ -119,6 +166,10 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Adds the perimeter pixel to the stack and perimeter buffer.
+        /// </summary>
+        /// <param name="p">P.</param>
         private void AddPerimeterPixel(int p)
         {
             stack.Add(p);
@@ -126,6 +177,11 @@ namespace bitclean
             perimSize++;
         }
 
+        /// <summary>
+        /// Checks that the field is correctly set and that the direction is
+        /// still within the preset tolerance.
+        /// </summary>
+        /// <param name="dir">Dir.</param>
         private void CheckField(Field dir)
         {
             if (!fieldSet) {
@@ -135,7 +191,7 @@ namespace bitclean
             else
             {
                 tolerance += curfield[Convert.ToInt32(dir)];
-                if (tolerance < -4 || tolerance > 4)
+                if (tolerance < -Constants.TOLERANCE || tolerance > Constants.TOLERANCE)
                 {
                     tolerance = 0;
                     numEdges++;
@@ -144,6 +200,10 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Sets the field vector.
+        /// </summary>
+        /// <param name="dir">Dir.</param>
         private void SetField(Field dir)
         {
             if (dir == Field.t || dir == Field.b) {   //vertical
@@ -165,10 +225,22 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Gets the perimiter list.
+        /// </summary>
+        /// <returns>The perimiter.</returns>
         public List<int> GetPerimiter() { return perimeter; }
 
+        /// <summary>
+        /// Gets the size of the perimeter.
+        /// </summary>
+        /// <returns>The sizeof perimeter.</returns>
         public int GetSizeofPerimeter() { return perimSize; }
 
+        /// <summary>
+        /// Gets the number of edges.
+        /// </summary>
+        /// <returns>The edges.</returns>
         public int GetEdges() { return numEdges; }
     }
 }

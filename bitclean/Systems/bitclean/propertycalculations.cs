@@ -1,13 +1,20 @@
-﻿/*
- * bitclean: /system/propertycalculations.cs
- * author: Austin Herman
- * 5/8/2019
+﻿/* /Systems/bitclean/propertycalculations.cs
+ * Gets the confidence of whether or not the object is a structure based on its
+ properties. NOT CURRENTLY USED.
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Property calculations.
+    /// </summary>
     public static class PropertyCalculations
     {
+        /// <summary>
+        /// Gets the confidence.
+        /// </summary>
+        /// <returns>The confidence.</returns>
+        /// <param name="d">D.</param>
         public static Confidence GetConfidence(ObjectData d)
         {
 			//avg, size, edge
@@ -29,6 +36,12 @@ namespace bitclean
 
             return c;
         }
+
+        /// <summary>
+        /// Gets confidence scores for the edge property.
+        /// </summary>
+        /// <param name="c">C.</param>
+        /// <param name="d">D.</param>
         private static void Edges(Confidence c, double d)
         {
             if (d < 18.2) c.d_edge += 95.00;
@@ -47,6 +60,11 @@ namespace bitclean
             else c.s_edge += 95.00;
         }
 
+        /// <summary>
+        /// Gets confidence scores for the size property.
+        /// </summary>
+        /// <param name="c">C.</param>
+        /// <param name="d">D.</param>
         private static void Size(Confidence c, double d)
         {
             if (d < 30) c.d_size += 99.00;
@@ -69,6 +87,11 @@ namespace bitclean
             c.s_size -= 25;
         }
 
+        /// <summary>
+        /// Gets confidence scores for the hue property
+        /// </summary>
+        /// <param name="c">C.</param>
+        /// <param name="d">D.</param>
         private static void Hue(Confidence c, double d)
         {
             if (d < 30) c.d_val += 1.00;

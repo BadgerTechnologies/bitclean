@@ -6,6 +6,11 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
+/* /UI/MainWindow.cs
+ * The starting window. Lets the user load/save an image, run bitclean, export
+ the object data to an xml, and open the diagnostics window.
+ */
+
 namespace bitclean.UI
 {
     /// <summary>
@@ -16,11 +21,19 @@ namespace bitclean.UI
         Bitmap bitmap;
         List<ObjectData> objects;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.UI.MainWindow"/> class.
+        /// </summary>
         public MainWindow() : base(Gtk.WindowType.Toplevel)
         {
             Build();
         }
 
+        /// <summary>
+        /// When the window is closed.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="a">The alpha component.</param>
         protected void OnDeleteEvent(object sender, DeleteEventArgs a)
         {
             Application.Quit();

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-/*
- * bitclean: /system/brain.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/learning/brain.cs
+ * The broken, wannabe neural network
  */
 
 namespace bitclean
@@ -30,12 +28,21 @@ namespace bitclean
 		private List<List<int>> weights;
 		public int attributeCount;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Brain"/> class.
+        /// </summary>
+        /// <param name="numAtttributes">Number atttributes.</param>
 		public Brain(int numAtttributes)
 		{
 			attributeCount = numAtttributes;
 			Generate();			
 		}
 
+        /// <summary>
+        /// Run through each synapse group and transmit data.
+        /// </summary>
+        /// <returns>The think.</returns>
+        /// <param name="inputdata">Inputdata.</param>
 		public double Think(double[] inputdata)
 		{
 			DumpMemory();
@@ -56,6 +63,9 @@ namespace bitclean
 			return neurons[attributeCount][0].axon;
 		}
 
+        /// <summary>
+        /// Remove all neurons
+        /// </summary>
 		private void DumpMemory()
 		{
 			for (int i = 0; i < neurons.Count; i++) {
@@ -64,6 +74,10 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Build a net of synapses and neurons
+        /// </summary>
+        /// <param name="numAttributes">Number attributes.</param>
 		private void Regenerate(int numAttributes)
 		{
 			attributeCount = numAttributes;
@@ -79,13 +93,18 @@ namespace bitclean
 			Generate();
 		}
 
-		// make brain cells
+		/// <summary>
+        /// Generate the neurons/synapses and hook them together
+        /// </summary>
 		private void Generate()
 		{
 			GenerateNeurons();
 			GenerateSynapses();
 		}
 
+        /// <summary>
+        /// Generates the neurons.
+        /// </summary>
 		private void GenerateNeurons()
 		{
 			inputlayer = new List<Neuron>();
@@ -104,6 +123,9 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Generates the synapses.
+        /// </summary>
 		private void GenerateSynapses()
 		{
 			synapses = new List<List<Synapse>>();
@@ -141,19 +163,33 @@ namespace bitclean
 
 	}
 
+    /// <summary>
+    /// Neuron.
+    /// </summary>
 	public class Neuron
 	{
+        // all of the data from incoming synapses
 		public List<double> data = new List<double>();
+        // the single numerical output for this neuron
 		public double axon;
 
 		// dendrite summation
 		private double sum;
+        // whether or not the sum has been calculated yet
 		private bool calculatedSum;
 
+        // the function to put the summed data through for the output
 		private ActivationFunction func;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Neuron"/> class.
+        /// </summary>
+        /// <param name="func">Func.</param>
 		public Neuron(ActivationFunction func) { this.func = func; }
 		
+        /// <summary>
+        /// Calculates the axon.
+        /// </summary>
 		public void CalculateAxon()
 		{
 			if (calculatedSum) return;
@@ -164,6 +200,9 @@ namespace bitclean
 			calculatedSum = true;
 		}
 		
+        /// <summary>
+        /// Fry this neuron.
+        /// </summary>
 		public void Fry()
 		{
 			data.Clear();
@@ -173,13 +212,26 @@ namespace bitclean
 		}
 	}
 
+    /// <summary>
+    /// Synapse.
+    /// </summary>
 	public class Synapse
 	{
+        // the incoming neuron
 		private Neuron transmitter;
+        // the receiving neuron
 		private Neuron receiver;
+        // the weight to apply for this data transfer
 		private readonly int weight;
+        // alternative to using a weight - square the data or not
 		private readonly bool squared;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:bitclean.Synapse"/> class.
+        /// </summary>
+        /// <param name="transmitter">Transmitter.</param>
+        /// <param name="receiver">Receiver.</param>
+        /// <param name="weight">Weight.</param>
 		public Synapse(Neuron transmitter, Neuron receiver, int weight)
 		{
 			this.transmitter = transmitter;
@@ -188,6 +240,9 @@ namespace bitclean
             squared |= weight == 0; // if weight == 0, squared = true
         }
 
+        /// <summary>
+        /// Transmit data from the transmitter to the receiver.
+        /// </summary>
         public void Transmit()
 		{
 			transmitter.CalculateAxon();
@@ -200,6 +255,9 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Removes receivers' data.
+        /// </summary>
 		public void ClearReceivers()
 		{
 			if (receiver != null)

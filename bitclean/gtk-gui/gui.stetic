@@ -4,8 +4,8 @@
     <images-root-path>..</images-root-path>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/bitclean.exe" internal="true" />
     <widget-library name="../bin/NPlot.Gtk.dll" />
+    <widget-library name="../bin/Release/bitclean.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="bitclean.Diagnostics" design-size="1032 792">
     <action-group name="Default">

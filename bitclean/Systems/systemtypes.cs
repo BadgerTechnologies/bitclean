@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-/*
- * bitclean: /system/systemtypes.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/systemtypes.cs
+ * Holds types used by the classes found in the /Systems/ directory
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Mix of generic constants.
+    /// </summary>
 	static class Constants
 	{
 		public const short VALUE_THRESHOLD = 0;				// a useful threshold for pixel values (white)
@@ -22,16 +23,21 @@ namespace bitclean
 											//  - this is helpful for average hue and average density functions
 		public const short INT_OBJ_TAG = 1300;
 		public const int BOUNDING_RECT_OFFSET = 300;    // offset for the bounding rectangle used to find neighbors
+        public const int TOLERANCE = 4;
 	}
 
-	//the image file's basic data
+    /// <summary>
+    /// the image file's basic data
+    /// </summary>
 	public struct Data
     {
         public int width, height;	// counted from 1
         public int totalpixels;		// counted from 1
     };
 
-    //a basic pixel class
+    /// <summary>
+    /// a basic pixel structure
+    /// </summary>
     public struct Pixel
     {
         public bool selected;   //used for selection
@@ -40,12 +46,18 @@ namespace bitclean
         public int id;          //ID [0->totalpixels - 1]
     };
 
+    /// <summary>
+    /// Coordinate structure
+    /// </summary>
 	public struct Coordinate
 	{
 		public int x, y;
 	}
 
-    //each pixel has eight neighbors
+    /// <summary>
+    /// Octan is a made up word. It's used for storing the eight neighboring 
+    /// pixels surrounding a single pixel.
+    /// </summary>
     class Octan
     {
         public int tl = -1, t = -1, tr = -1,
@@ -60,12 +72,18 @@ namespace bitclean
         }
     };
 
-    //edge and filler use this for navigation around the pixel map
+    /// <summary>
+    /// Edge and filler use this for navigation around the pixel map.
+    /// </summary>
     enum Direction
     {
         none, up, down, left, right
     };
 
+    /// <summary>
+    /// Trail, very similar to a basic vector in physics but has a starting 
+    /// location instead of a magnitude.
+    /// </summary>
     class Trail
     {
         public Direction dir = Direction.none;
@@ -73,17 +91,26 @@ namespace bitclean
         public Trail(Direction d, int i) { dir = d; id = i; }
     };
 
+    /// <summary>
+    /// Object bounds.
+    /// </summary>
 	public struct ObjectBounds
 	{
 		public int top, left, bottom, right;
 	}
 	
+    /// <summary>
+    /// Bounding rectangle.
+    /// </summary>
 	public struct BoundingRectangle
 	{
 		public int top, left, bottom, right,
 					width, height;
 	}
 
+    /// <summary>
+    /// Confidence.
+    /// </summary>
 	public class Confidence
 	{
 		public double structure, dust,
@@ -94,6 +121,9 @@ namespace bitclean
         public string decision = "";
 	};
 
+    /// <summary>
+    /// Object data.
+    /// </summary>
 	public class ObjectData
     {
 		public double avghue;		// average integer color value of all pixels in selection
@@ -108,6 +138,9 @@ namespace bitclean
         public Confidence objconf;	// confidence property
     }
 
+    /// <summary>
+    /// Basic node for a binary tree.
+    /// </summary>
 	public class Node
     {
         public Node left, right;
@@ -116,7 +149,10 @@ namespace bitclean
         public Node(int i) { left = null; right = null; id = i; }
     };
 
-    //simply stores two integers in one structure
+    /// <summary>
+    /// Tup is most certainly a made up word. It simply stores two integers in 
+    /// one structure
+    /// </summary>
     class Tup
     {
         public int s, e;
@@ -124,6 +160,9 @@ namespace bitclean
         public void Change(int st, int en) { s = st; e = en; }
     };
 
+    /// <summary>
+    /// Another way to represent the eight neighbors surrounding a pixel.
+    /// </summary>
     public enum Field
     {
         tl, t, tr,
@@ -131,26 +170,36 @@ namespace bitclean
         bl, b, br
     };
 
+    /// <summary>
+    /// Field vectors for assigning tolerances.
+    /// </summary>
     public static class FieldVector
     {
+        // moving up or down
         public static readonly int[] verticalfield =
         {
             -1, 0, 1,
             -2,    2,
             -1, 0, 1
         };
+
+        // moving left or right
         public static readonly int[] horizontalfield =
         {
             -1, -2, -1,
              0,      0,
              1,  2,  1
         };
+
+        // moving up-right or down-left
         public static readonly int[] leftslantfield =
         {
             0, -1, -2,
             1,     -1,
             2,  1,  0
         };
+
+        // moving up-left or down-right
         public static readonly int[] rightslantfield =
         {
             -2, -1, 0,

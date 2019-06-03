@@ -1,18 +1,26 @@
 ﻿using System.Collections.Generic;
 
-/*
- * bitclean: /system/global.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/global.cs
+ * Contains the system for calculating the number of neighbors near a given 
+ object. 
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Global systems.
+    /// </summary>
 	class GlobalSystems
 	{
+        // list of objects sorted by their x coordinate
         private List<ObjectData> objectsByX;
+        // list of objects sorted by their y coordinate
         private List<ObjectData> objectsByY = new List<ObjectData>();
 
+        /// <summary>
+        /// Gets the neighbors.
+        /// </summary>
+        /// <param name="objectList">Object list.</param>
         public void GetNeighbors(List<ObjectData> objectList)
 		{
 			objectsByX = objectList;
@@ -40,7 +48,7 @@ namespace bitclean
 						break;
 				}
 
-				//sort Y list
+				// sort Y list
 				QuickSortByY(0, objectsByY.Count - 1);
 
 				// iterate through y list
@@ -58,6 +66,11 @@ namespace bitclean
 
 		#region X axis functions
 
+        /// <summary>
+        /// Swaps the two integers in the X sorted list.
+        /// </summary>
+        /// <param name="a">The alpha component.</param>
+        /// <param name="b">The blue component.</param>
 		private void SwapX(int a, int b)
 		{
 			ObjectData hold = objectsByX[a];
@@ -65,6 +78,12 @@ namespace bitclean
 			objectsByX[b] = hold;
 		}
 
+        /// <summary>
+        /// Partitions the X sorted list.
+        /// </summary>
+        /// <returns>The by x.</returns>
+        /// <param name="low">Low.</param>
+        /// <param name="high">High.</param>
 		private int PartitionByX(int low, int high)
 		{
 			int pivot = objectsByX[high].position.x;    // pivot 
@@ -86,6 +105,11 @@ namespace bitclean
 			return i + 1;
 		}
 
+        /// <summary>
+        /// Quicksort in the X direction.
+        /// </summary>
+        /// <param name="low">Low.</param>
+        /// <param name="high">High.</param>
 		private void QuickSortByX(int low, int high)
 		{
 			if (low < high)
@@ -101,6 +125,12 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Checks if the two bounding rectangles intersect in the x direction
+        /// </summary>
+        /// <returns><c>true</c>, if ntersection was XIed, <c>false</c> otherwise.</returns>
+        /// <param name="a">The alpha component.</param>
+        /// <param name="b">The blue component.</param>
 		private bool XIntersection(BoundingRectangle a, BoundingRectangle b)
 		{
 			if (a.left < b.right && a.right > b.left)
@@ -111,18 +141,29 @@ namespace bitclean
 			return false;
 		}
 
-		#endregion
+        #endregion
 
-		#region Y axis functions
+        #region Y axis functions
 
-		private void SwapY(int a, int b)
+        /// <summary>
+        /// Swaps the two integers in the Y sorted list.
+        /// </summary>
+        /// <param name="a">The alpha component.</param>
+        /// <param name="b">The blue component.</param>
+        private void SwapY(int a, int b)
 		{
 			ObjectData hold = objectsByY[a];
 			objectsByY[a] = objectsByY[b];
 			objectsByY[b] = hold;
 		}
 
-		private int PartitionByY(int low, int high)
+        /// <summary>
+        /// Partitions the Y sorted list.
+        /// </summary>
+        /// <returns>The by y.</returns>
+        /// <param name="low">Low.</param>
+        /// <param name="high">High.</param>
+        private int PartitionByY(int low, int high)
 		{
 			int pivot = objectsByY[high].position.y;    // pivot 
 			int i = low - 1;  // Index of smaller element 
@@ -143,6 +184,11 @@ namespace bitclean
 			return i + 1;
 		}
 
+        /// <summary>
+        /// Quicksort in the Y direction.
+        /// </summary>
+        /// <param name="low">Low.</param>
+        /// <param name="high">High.</param>
 		private void QuickSortByY(int low, int high)
 		{
 			if (low < high)
@@ -158,6 +204,12 @@ namespace bitclean
 			}
 		}
 
+        /// <summary>
+        /// Checks if the two bounding rectangles intersect in the Y direction
+        /// </summary>
+        /// <returns><c>true</c>, if ntersection was YIed, <c>false</c> otherwise.</returns>
+        /// <param name="a">The alpha component.</param>
+        /// <param name="b">The blue component.</param>
 		private bool YIntersection(BoundingRectangle a, BoundingRectangle b)
 		{
 			if (a.top < b.bottom && a.bottom > b.top)

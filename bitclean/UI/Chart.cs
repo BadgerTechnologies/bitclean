@@ -1,9 +1,12 @@
 ﻿using System;
 using Gtk;
 using NPlot;
-using NPlot.Gtk;
-using System.Drawing;
 using System.Collections.Generic;
+
+/* /UI/Chart.cs
+ * Chart window interface. Will display a chart given the data and configuration
+ options.
+ */
 
 namespace bitclean.UI
 {

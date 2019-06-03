@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
 
-/*
- * bitclean: /system/tree.cs
- * author: Austin Herman
- * 5/8/2019
+/* /Systems/bitclean/selection.cs
+ * Basic static tree class used to manage binary trees.
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Tree.
+    /// </summary>
     public static class Tree
     {
+        /// <summary>
+        /// Insert the specified id into root node n.
+        /// </summary>
+        /// <returns>The insert.</returns>
+        /// <param name="n">N.</param>
+        /// <param name="id">Identifier.</param>
         public static bool Insert(ref Node n, int id)
         {
             if (n == null) {
@@ -46,6 +53,12 @@ namespace bitclean
             return false;
         }
 
+        /// <summary>
+        /// Finds the id in the given root node.
+        /// </summary>
+        /// <returns>The node.</returns>
+        /// <param name="n">N.</param>
+        /// <param name="id">Identifier.</param>
         public static int FindNode(Node n, int id)
         {
             if (n == null) return -1;
@@ -63,6 +76,11 @@ namespace bitclean
             return -1;
         }
 
+        /// <summary>
+        /// Builds the tree as a balanced binary tree from the list.
+        /// </summary>
+        /// <param name="v">V.</param>
+        /// <param name="r">The red component.</param>
         public static void BuildTree(List<int> v, Node r)
         {
             List<Tup> stack = new List<Tup>();
@@ -90,6 +108,11 @@ namespace bitclean
             }
         }
 
+        /// <summary>
+        /// Gets the tree nodes in order and puts them into the list.
+        /// </summary>
+        /// <param name="n">N.</param>
+        /// <param name="v">V.</param>
         public static void GetInOrder(Node n, List<int> v)
         {
 			Node r = n;

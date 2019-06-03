@@ -1,5 +1,10 @@
 ﻿using System;
 
+/* /UI/ChartConfiguration.cs
+ * Chart configuration window interface. Allows user to select the options for
+ displaying a plot of object data.
+ */
+
 namespace bitclean.UI
 {
     /// <summary>

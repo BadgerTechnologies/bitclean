@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-/*
- * bitclean: /system/UItypes.cs
- * author: Austin Herman
- * 5/9/2019
+/* /UI/UItypes.cs
+ * Generic types for the user interface.
  */
 
 namespace bitclean
 {
+    /// <summary>
+    /// Generic UI constants.
+    /// </summary>
     static class UIConstants
     {
         public const double EPSILON = 0.000001f;
     }
 
+    /// <summary>
+    /// Chart object.
+    /// </summary>
     public class ChartObject
     {
         public string decision;
@@ -26,6 +29,9 @@ namespace bitclean
         public Confidence objconf;  // confidence property 
     }
 
+    /// <summary>
+    /// Attribute statistics.
+    /// </summary>
     public class AttributeStatistics
     {
         public double max = -1.0, min = -1.0, avg = 0.0;
@@ -39,6 +45,9 @@ namespace bitclean
 
     }
 
+    /// <summary>
+    /// Chart configuration options.
+    /// </summary>
     public class ChartOptions
     {
         public string horizontalChoice, verticalChoice;
@@ -47,5 +56,8 @@ namespace bitclean
         public bool dust, structures;
     }
 
+    /// <summary>
+    /// Enumerable axis choice.
+    /// </summary>
     enum AxisChoice { tag, size, avghue, density, edgeratio, neighbors }
 }
