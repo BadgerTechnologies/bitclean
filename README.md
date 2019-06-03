@@ -14,7 +14,7 @@ Your IDE needs to reference GTK# as well.
 This version has only been tested on a linux machine running Ubuntu 16.04
 
 # Download the Latest Version
-BitCleanGTK#.0 - .zip
+BitCleanGTK# v0.03 - .zip
 [link]
 
 # Links
@@ -32,4 +32,8 @@ Contact:
 austin@badger-technologies.com
 
 # Previous Versions:
+v0.1 - initial commit
+v0.2 - chart configuration/functionality with nplot. some code redesign
+v0.2.5 - sifter halfway works, file restructures
+
 This application uses the object algorithms written for SharpClean.
