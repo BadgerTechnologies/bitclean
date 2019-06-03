@@ -33,7 +33,10 @@ austin@badger-technologies.com
 
 # Previous Versions:
 v0.1 - initial commit
+
 v0.2 - chart configuration/functionality with nplot. some code redesign
+
 v0.2.5 - sifter halfway works, file restructures
+
 
 This application uses the object algorithms written for SharpClean.
