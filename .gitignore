@@ -8,4 +8,4 @@ bitclean.sln
 /bitclean/bin/Debug/
 /bitclean/bin/Release/
 /bitclean/packages/
-
+/bitclean/packages.config
