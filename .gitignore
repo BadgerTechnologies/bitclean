@@ -7,3 +7,5 @@ bitclean.sln
 /bitclean/obj/
 /bitclean/bin/Debug/
 /bitclean/bin/Release/
+/bitclean/packages/
+
