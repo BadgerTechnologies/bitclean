@@ -24,6 +24,8 @@ namespace bitclean
 
 		private global::Gtk.Action RunSifterAction;
 
+		private global::Gtk.Action RunIrisAction;
+
 		private global::Gtk.VBox vbox3;
 
 		private global::Gtk.MenuBar menubar2;
@@ -87,6 +89,9 @@ namespace bitclean
 			this.RunSifterAction = new global::Gtk.Action("RunSifterAction", global::Mono.Unix.Catalog.GetString("Run Sifter"), null, null);
 			this.RunSifterAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Run Sifter");
 			w1.Add(this.RunSifterAction, null);
+			this.RunIrisAction = new global::Gtk.Action("RunIrisAction", global::Mono.Unix.Catalog.GetString("Run Iris"), null, null);
+			this.RunIrisAction.ShortLabel = global::Mono.Unix.Catalog.GetString("Run Iris");
+			w1.Add(this.RunIrisAction, null);
 			this.UIManager.InsertActionGroup(w1, 0);
 			this.AddAccelGroup(this.UIManager.AccelGroup);
 			this.Name = "bitclean.Diagnostics";

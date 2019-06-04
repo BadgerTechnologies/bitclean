@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 /* /Systems/learning/sifter.cs
  * The sifter class used to sift data based on a given function
  */
@@ -12,7 +13,7 @@ namespace bitclean
 	class Sifter
 	{
         // array of statistics on just the dust data
-		private readonly AttributeStatistics[] dustStats;
+        private readonly AttributeStatistics[] dustStats;
         private Linear sizeLinear; // edgeLinear, densityLinear;
         private Logistic sizeLogistic; // edgeLogistic, densityLogistic;
         // tolerance for how far off we can be from our target percentages
@@ -35,40 +36,40 @@ namespace bitclean
         /// <returns>The sift.</returns>
 		public int Sift()
 		{
-			int output = 0;
+        		int output = 0;
 
-			// calculate size value
-			// calculate edge ratio value
-			// calculate density value
+        		// calculate size value
+        		// calculate edge ratio value
+        		// calculate density value
 
-			// add together
+        		// add together
 
-			return output;
+        		return output;
 		}
 
         /// <summary>
         /// Sets up size/edge ratio/density piecewise functions.
         /// </summary>
-		private void SetUpFunctions()
-		{
-			// set up size piecewise functions
-			sizeLinear = new Linear(1.0 / dustStats[0].avg, -1);
-			sizeLogistic = new Logistic();
-			GenerateLogisticParameters(sizeLogistic, dustStats[0]);
+        private void SetUpFunctions()
+        {
+            // set up size piecewise functions
+            sizeLinear = new Linear(1.0 / dustStats[0].avg, -1);
+            sizeLogistic = new Logistic();
+            GenerateLogisticParameters(sizeLogistic, dustStats[0]);
 
             Console.WriteLine("a:{0}\tb:{1}\tc:{2}", sizeLogistic.a, sizeLogistic.b, sizeLogistic.c);
-			// set up edge ratio piecewise functions
+            // set up edge ratio piecewise functions
 
-			// set up density inverted piecewise functions
-		}
+            // set up density inverted piecewise functions
+        }
 
         /// <summary>
         /// Automatically generates the logistic parameters.
         /// </summary>
         /// <param name="func">Func.</param>
         /// <param name="stats">Stats.</param>
-		public void GenerateLogisticParameters(Logistic func, AttributeStatistics stats)
-		{
+        public void GenerateLogisticParameters(Logistic func, AttributeStatistics stats)
+        {
             // we want sifter to use the statistics from the object data to generate 
             // a logistic curve such that the 90% mark is roughly equal to the max
             // value for this parameter (size, density, edge ratio, hue, etc) and
@@ -76,10 +77,10 @@ namespace bitclean
             // mark to equal -(90%)
 
 
-			// set initial generic parameter values
-			func.b = .001;  // beta generic
-			func.c = 2;     // c generic
-			func.a = Math.Exp(stats.avg * func.b);  // alpha generic
+            // set initial generic parameter values
+            func.b = .001;  // beta generic
+            func.c = 2;     // c generic
+            func.a = Math.Exp(stats.avg * func.b);  // alpha generic
             func.offset = -1;
 
             double bump = .001;
@@ -110,5 +111,5 @@ namespace bitclean
 
             } while (!(calculated > (.9 - tolerance) && calculated < (.9 + tolerance)));
         }
-	}
+    }
 }
