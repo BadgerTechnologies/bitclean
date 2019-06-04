@@ -20,14 +20,17 @@ namespace bitclean.UI
         TreeViewColumn[] treeColumns;
         int xChoiceIndx, yChoiceIndx, decisionIndx, tagIndx;
         List<List<double>> dustdata, structdata;
+        MessageDialog errdialog;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:bitclean.UI.Chart"/> class.
+        /// Initializes a new instance of the <see cref="T:bitclean.UI.Chart"/> 
+        /// class.
         /// </summary>
         /// <param name="objects">Objects.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="columns">Columns.</param>
-        public Chart(List<object[]> objects, ChartOptions configuration, TreeViewColumn[] columns) : base(WindowType.Toplevel)
+        public Chart(List<object[]> objects, ChartOptions configuration, 
+            TreeViewColumn[] columns) : base(WindowType.Toplevel)
         {
             Build();
 
@@ -44,7 +47,8 @@ namespace bitclean.UI
                 SetUpData();
 
                 // create a new plot surface, call plot set up
-                NPlot.Gtk.PlotSurface2D testplot = new NPlot.Gtk.PlotSurface2D();
+                NPlot.Gtk.PlotSurface2D testplot = 
+                    new NPlot.Gtk.PlotSurface2D();
                 Plot(testplot);
 
                 // add plot surface to the window and show it
@@ -62,10 +66,14 @@ namespace bitclean.UI
                 Add(noDataLabel);
                 ShowAll();
             }
+
+            errdialog = new MessageDialog(this, DialogFlags.DestroyWithParent,
+                MessageType.Error, ButtonsType.Close, null);
         }
 
         /// <summary>
-        /// Sets up data such that the dust and structure x and y axis are properly configured.
+        /// Sets up data such that the dust and structure x and y axis are 
+        /// properly configured.
         /// </summary>
         private void SetUpData()
         {
@@ -83,21 +91,28 @@ namespace bitclean.UI
                     tagIndx = i;
             }
 
-            // TODO: run a configuration.squared and tag = x or y choice index check and handle appropriately
+            // TODO: run a squared and axis choice check, handle appropriately
 
             // populate xaxis/yaxis with filtered data
             try {
                 PopulateData();
             }
             catch (Exception excp) {
+                errdialog.Text = "Error populating chart with data\n\n" +
+                    excp.Message;
+                errdialog.Run();
+                errdialog.Hide();
+
                 Console.WriteLine(excp.Message);
                 Console.WriteLine(excp.Data);
             }
 
-            // preprocess data - TODO: make axis independent
+            // preprocess data
+            // TODO: make axis independent
             PreprocessData();
 
-            // put yAxis through function choice - TODO: make function axis independent
+            // put yAxis through function choice 
+            // TODO: make function axis independent
             ProcessFunction();
 
         }
@@ -136,11 +151,13 @@ namespace bitclean.UI
             // add the plots to the plot surface, give it a title
             plotSurface.Add(dustPlot);
             plotSurface.Add(structplot);
-            plotSurface.Title = configuration.verticalChoice + " vs " + configuration.horizontalChoice;
+            plotSurface.Title = configuration.verticalChoice + " vs " + 
+                configuration.horizontalChoice;
         }
 
         /// <summary>
-        /// Populates the dust and structure lists with the proper x and y axis data
+        /// Populates the dust and structure lists with the proper x and y axis 
+        /// data
         /// </summary>
         private void PopulateData()
         {
@@ -153,14 +170,18 @@ namespace bitclean.UI
             for (int i = 0; i < objects.Count; i++)
             {
                 // check dust filter
-                if (configuration.dust && objects[i][decisionIndx].ToString() == "dust") {
+                if (configuration.dust && objects[i][decisionIndx].ToString() 
+                        == "dust") {
                     dustdata[0].Add(Convert.ToDouble(objects[i][xChoiceIndx]));
                     dustdata[1].Add(Convert.ToDouble(objects[i][yChoiceIndx]));
                 }
                 // check structure filter
-                if (configuration.structures && objects[i][decisionIndx].ToString() == "structure") {
-                    structdata[0].Add(Convert.ToDouble(objects[i][xChoiceIndx]));
-                    structdata[1].Add(Convert.ToDouble(objects[i][yChoiceIndx]));
+                if (configuration.structures && 
+                    objects[i][decisionIndx].ToString() == "structure") {
+                    structdata[0]
+                        .Add(Convert.ToDouble(objects[i][xChoiceIndx]));
+                    structdata[1]
+                        .Add(Convert.ToDouble(objects[i][yChoiceIndx]));
                 }
             }
         }
@@ -170,7 +191,8 @@ namespace bitclean.UI
         /// </summary>
         private void PreprocessData()
         {
-            if (configuration.squared) // if squared option AND axis is not a tag, then square the data
+            // if squared option AND axis is not a tag, then square the data
+            if (configuration.squared) 
             {
                 for (int i = 0; i < dustdata[0].Count; i++)
                 {
@@ -195,13 +217,16 @@ namespace bitclean.UI
         /// </summary>
         private void ProcessFunction()
         {
-            // currently no need to calculate a linear function - this will change
+            // currently no need to calculate a linear function - 
+            // this will change
             if (configuration.function.ToString() != "bitclean.Linear")
             {
                 for (int i = 0; i < dustdata[0].Count; i++)
-                    dustdata[1][i] = configuration.function.Activate(dustdata[1][i]);
+                    dustdata[1][i] = 
+                        configuration.function.Activate(dustdata[1][i]);
                 for (int i = 0; i < structdata[0].Count; i++)
-                    structdata[1][i] = configuration.function.Activate(structdata[1][i]);
+                    structdata[1][i] = 
+                        configuration.function.Activate(structdata[1][i]);
             }
         }
     }

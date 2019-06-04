@@ -23,6 +23,7 @@ namespace bitclean
 			{
 				for (int x = 0; x < bmp.Width; x++)
 				{
+                    // System.Console.WriteLine(bmp.GetPixel(x, y).ToString());
 					// if the current pixel is the FLOOR (magenta) color, set it to white
 					if (bmp.GetPixel(x, y) == Constants.FLOOR)
 						bmp.SetPixel(x, y, Constants.WHITE);

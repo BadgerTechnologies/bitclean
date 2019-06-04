@@ -20,13 +20,17 @@ namespace bitclean.UI
     {
         Bitmap bitmap;
         List<ObjectData> objects;
+        MessageDialog errdialog;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:bitclean.UI.MainWindow"/> class.
+        /// Initializes a new instance of the 
+        /// <see cref="T:bitclean.UI.MainWindow"/> class.
         /// </summary>
         public MainWindow() : base(Gtk.WindowType.Toplevel)
         {
             Build();
+            errdialog = new MessageDialog(this, DialogFlags.DestroyWithParent, 
+                MessageType.Error, ButtonsType.Close, null);
         }
 
         /// <summary>
@@ -49,8 +53,13 @@ namespace bitclean.UI
         {
             // get file path from user
             string result = null;
-            Gtk.FileChooserDialog openDialog = new FileChooserDialog("Open", null, FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
-            FileFilter imageFilter = new FileFilter { Name = "jpeg, png, bmp, ico" };
+            FileChooserDialog openDialog = new FileChooserDialog("Open", null, 
+                FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", 
+                ResponseType.Accept);
+            FileFilter imageFilter = new FileFilter { 
+                    Name = "jpeg, png, bmp, ico" 
+                };
+
             imageFilter.AddPattern("*.jpeg");
             imageFilter.AddPattern("*.png");
             imageFilter.AddPattern("*.bmp");
@@ -67,12 +76,19 @@ namespace bitclean.UI
                     Pixbuf buffer = new Pixbuf(result);
                     displayedImage.Pixbuf = buffer;
 
-                    //open image as a bitmap and parse it to change the floor color
+                    // open image as a bitmap and parse it to change the floor 
+                    // color
                     bitmap = new Bitmap(result);
                     ImageOperations.ParseImage(ref bitmap);
                 }
                 catch (Exception excp)
                 {
+                    // display error to user
+                    errdialog.Text = "Error Loading: " + result + "\n\n" + 
+                        excp.Message;
+                    errdialog.Run();
+                    errdialog.Hide();
+                        
                     Console.WriteLine(excp.Message);
                 }
 
@@ -82,7 +98,8 @@ namespace bitclean.UI
         }
 
         /// <summary>
-        /// Saves the image to a valid image file type of jpeg, png, bmp, or ico.
+        /// Saves the image to a valid image file type of jpeg, png, bmp, or 
+        /// ico.
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
@@ -90,15 +107,25 @@ namespace bitclean.UI
         {
             if (displayedImage.Pixbuf == null)
             {
+                // display error to user
+                errdialog.Text = "Error Saving file, no image loaded.";
+                errdialog.Run();
+                errdialog.Hide();
+
                 Console.WriteLine("No image loaded.");
                 return;
             }
 
             // get file path from user
             string result = null;
-            FileChooserDialog saveDialog = new FileChooserDialog("Save as", null, FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+            FileChooserDialog saveDialog = new FileChooserDialog("Save as", 
+                null, FileChooserAction.Save, "Cancel", ResponseType.Cancel, 
+                "Save", ResponseType.Accept);
 
-            FileFilter imageFilter = new FileFilter { Name = "jpeg, png, bmp, ico" };
+            FileFilter imageFilter = new FileFilter { 
+                    Name = "jpeg, png, bmp, ico" 
+                };
+
             imageFilter.AddPattern("*.jpeg");
             imageFilter.AddPattern("*.png");
             imageFilter.AddPattern("*.bmp");
@@ -113,11 +140,28 @@ namespace bitclean.UI
 
                 try
                 { // try to save file
-                    if (!displayedImage.Pixbuf.Save(result, extension.Substring(1)))
-                        Console.WriteLine("cannot save file extension {0}", extension);
+                    if (!displayedImage.Pixbuf
+                            .Save(result, extension.Substring(1)))
+                    {
+                        // display error to user
+                        errdialog.Text = "Error Saving: " + result + 
+                            "\n\n cannot save file extension " + extension;
+                        errdialog.Run();
+                        errdialog.Hide();
+
+                        Console.WriteLine("cannot save file extension {0}", 
+                            extension);
+                    }
+
                 }
                 catch (Exception excp)
                 {
+                    // display error to user
+                    errdialog.Text = "Error Saving: " + result + "\n\n" +
+                        excp.Message;
+                    errdialog.Run();
+                    errdialog.Hide();
+
                     Console.WriteLine(excp.Message);
                 }
             }
@@ -134,6 +178,11 @@ namespace bitclean.UI
         {
             if (displayedImage.Pixbuf == null)
             {
+                // display error to user
+                errdialog.Text = "Error Running Bitclean, no image loaded.";
+                errdialog.Run();
+                errdialog.Hide();
+
                 Console.WriteLine("No image loaded.");
                 return;
             }
@@ -176,13 +225,20 @@ namespace bitclean.UI
         {
             if (objects == null)
             {
+                // display error to user
+                errdialog.Text = "Error exporting to XML, no data loaded.";
+                errdialog.Run();
+                errdialog.Hide();
+
                 Console.WriteLine("No objects found");
                 return;
             }
 
             // get file name from user
             string result = null;
-            FileChooserDialog saveDialog = new FileChooserDialog("Save as", null, FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+            FileChooserDialog saveDialog = new FileChooserDialog("Save as", 
+                null, FileChooserAction.Save, "Cancel", ResponseType.Cancel, 
+                "Save", ResponseType.Accept);
 
             FileFilter xmlFilter = new FileFilter { Name = "xml" };
             xmlFilter.AddPattern("*.xml");
@@ -196,7 +252,6 @@ namespace bitclean.UI
             }
             else
             {
-                Console.WriteLine("Could not save data.");
                 saveDialog.Destroy();
                 return;
             }

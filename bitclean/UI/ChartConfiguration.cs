@@ -15,10 +15,12 @@ namespace bitclean.UI
         private ChartOptions configuration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:bitclean.UI.ChartConfiguration"/> class.
+        /// Initializes a new instance of the 
+        /// <see cref="T:bitclean.UI.ChartConfiguration"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public ChartConfiguration(ref ChartOptions configuration) : base(Gtk.WindowType.Toplevel)
+        public ChartConfiguration(ref ChartOptions configuration) : 
+            base(Gtk.WindowType.Toplevel)
         {
             Build();
 
@@ -48,8 +50,8 @@ namespace bitclean.UI
                 functionsCombo.Active = 0;
             else if (configuration.function.ToString() == "bitclean.Logistic")
                 functionsCombo.Active = 1;
-            //TODO: create a way to adjust the linear function through an entry box
-            //TODO: create logistic parameters entry box and update those parameters
+            //TODO: run time linear function adjustment through an entry box
+            //TODO: run time logistic function adjustment
 
             // set the preprocessing and filter check boxes
             squaredCheck.Active = configuration.squared;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using Gtk;
 
 /* /UI/Diagnostics.cs
  * Diagnostics interface. Allows the user to load object data from an xml file
@@ -12,10 +13,10 @@ namespace bitclean
     /// <summary>
     /// Diagnostics window.
     /// </summary>
-    public partial class Diagnostics : Gtk.Window
+    public partial class Diagnostics : Window
     {
         // tag, decision, size, avghue, density, edgeratio, neighbors.count
-        Gtk.ListStore store = new Gtk.ListStore
+        Gtk.ListStore store = new ListStore
         (typeof(int), typeof(string), typeof(int),
         typeof(double), typeof(double), typeof(double),
         typeof(int), typeof(double));
@@ -50,48 +51,61 @@ namespace bitclean
 
         ChartOptions configuration;
 
+        MessageDialog errdialog;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:bitclean.Diagnostics"/> class.
+        /// Initializes a new instance of the 
+        /// <see cref="T:bitclean.Diagnostics"/> class.
         /// </summary>
-        public Diagnostics() : base(Gtk.WindowType.Toplevel)
+        public Diagnostics() : base(WindowType.Toplevel)
         {
             Build();
 
             objects = new List<ChartObject>();
 
             // full data tree
-            datatree.AppendColumn("Tag", new Gtk.CellRendererText(), "text", 0);
-            datatree.AppendColumn("Decision", new Gtk.CellRendererText(), "text", 1);
-            datatree.AppendColumn("Size", new Gtk.CellRendererText(), "text", 2);
-            datatree.AppendColumn("Avg Hue", new Gtk.CellRendererText(), "text", 3);
-            datatree.AppendColumn("Density", new Gtk.CellRendererText(), "text", 4);
-            datatree.AppendColumn("Edge Ratio", new Gtk.CellRendererText(), "text", 5);
-            datatree.AppendColumn("Neighbors", new Gtk.CellRendererText(), "text", 6);
-            datatree.AppendColumn("Neural Output", new Gtk.CellRendererText(), "text", 7);
+            datatree.AppendColumn("Tag", new CellRendererText(), "text", 0);
+            datatree.AppendColumn("Decision", new CellRendererText(), 
+                "text", 1);
+            datatree.AppendColumn("Size", new CellRendererText(), "text", 2);
+            datatree.AppendColumn("Avg Hue", new CellRendererText(), "text", 3);
+            datatree.AppendColumn("Density", new CellRendererText(), "text", 4);
+            datatree.AppendColumn("Edge Ratio", new CellRendererText(), 
+                "text", 5);
+            datatree.AppendColumn("Neighbors", new CellRendererText(), 
+                "text", 6);
+            datatree.AppendColumn("Neural Output", new CellRendererText(), 
+                "text", 7);
             datatree.Model = store;
             datatree.ShowAll();
 
             // all stats tree
-            alldatatree.AppendColumn("Attribute", new Gtk.CellRendererText(), "text", 0);
-            alldatatree.AppendColumn("Max", new Gtk.CellRendererText(), "text", 1);
-            alldatatree.AppendColumn("Min", new Gtk.CellRendererText(), "text", 2);
-            alldatatree.AppendColumn("Avg", new Gtk.CellRendererText(), "text", 3);
+            alldatatree.AppendColumn("Attribute", new CellRendererText(), 
+                "text", 0);
+            alldatatree.AppendColumn("Max", new CellRendererText(), "text", 1);
+            alldatatree.AppendColumn("Min", new CellRendererText(), "text", 2);
+            alldatatree.AppendColumn("Avg", new CellRendererText(), "text", 3);
             alldatatree.Model = allstatsStore;
             alldatatree.ShowAll();
 
             // structure stats tree
-            structuredatatree.AppendColumn("Attribute", new Gtk.CellRendererText(), "text", 0);
-            structuredatatree.AppendColumn("Max", new Gtk.CellRendererText(), "text", 1);
-            structuredatatree.AppendColumn("Min", new Gtk.CellRendererText(), "text", 2);
-            structuredatatree.AppendColumn("Avg", new Gtk.CellRendererText(), "text", 3);
+            structuredatatree.AppendColumn("Attribute", new CellRendererText(), 
+                "text", 0);
+            structuredatatree.AppendColumn("Max", new CellRendererText(), 
+                "text", 1);
+            structuredatatree.AppendColumn("Min", new CellRendererText(), 
+                "text", 2);
+            structuredatatree.AppendColumn("Avg", new CellRendererText(), 
+                "text", 3);
             structuredatatree.Model = structstatsStore;
             structuredatatree.ShowAll();
 
             // dust stats tree
-            dustdatatree.AppendColumn("Attribute", new Gtk.CellRendererText(), "text", 0);
-            dustdatatree.AppendColumn("Max", new Gtk.CellRendererText(), "text", 1);
-            dustdatatree.AppendColumn("Min", new Gtk.CellRendererText(), "text", 2);
-            dustdatatree.AppendColumn("Avg", new Gtk.CellRendererText(), "text", 3);
+            dustdatatree.AppendColumn("Attribute", new CellRendererText(), 
+                "text", 0);
+            dustdatatree.AppendColumn("Max", new CellRendererText(), "text", 1);
+            dustdatatree.AppendColumn("Min", new CellRendererText(), "text", 2);
+            dustdatatree.AppendColumn("Avg", new CellRendererText(), "text", 3);
             dustdatatree.Model = duststatsStore;
             dustdatatree.ShowAll();
 
@@ -104,10 +118,14 @@ namespace bitclean
                 dust = true,
                 structures = true
             };
+
+            errdialog = new MessageDialog(this, DialogFlags.DestroyWithParent,
+                MessageType.Error, ButtonsType.Close, null);
         }
 
         /// <summary>
-        /// Gets xml file name from user and calls functions to populate the tree view.
+        /// Gets xml file name from user and calls functions to populate the 
+        /// tree view.
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
@@ -118,25 +136,33 @@ namespace bitclean
 
             // get file from user
             string result = null;
-            Gtk.FileChooserDialog openDialog = new Gtk.FileChooserDialog("Open", null, Gtk.FileChooserAction.Open, "Cancel", Gtk.ResponseType.Cancel, "Open", Gtk.ResponseType.Accept);
-            Gtk.FileFilter xmlFilter = new Gtk.FileFilter { Name = "xml" };
+            FileChooserDialog openDialog = new FileChooserDialog("Open", null, 
+                FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", 
+                ResponseType.Accept);
+            FileFilter xmlFilter = new FileFilter { Name = "xml" };
             xmlFilter.AddPattern("*.xml");
             openDialog.AddFilter(xmlFilter);
 
-            if (openDialog.Run() == (int)Gtk.ResponseType.Accept)
+            if (openDialog.Run() == (int) ResponseType.Accept)
                 result = openDialog.Filename;
 
             openDialog.Destroy();
 
-            // file dialog success, load xml data into memory and populate the treeview
+            // file dialog success, load xml data into memory and populate the 
+            // treeview
             if (result != null)
             {
-                try
-                {
+                try {
                     GetXMLData(result);
                 }
                 catch (Exception excp)
                 {
+                    // display error to user
+                    errdialog.Text = "Error Loading: " + result + "\n\n" +
+                        excp.Message;
+                    errdialog.Run();
+                    errdialog.Hide();
+
                     Console.WriteLine(excp.Message);
                 }
 
@@ -165,7 +191,8 @@ namespace bitclean
             // iterate through each object in root
             foreach (var obj in doc.Descendants("object"))
             {
-                // create chart object and populate it's data with xml attributes
+                // create chart object and populate it's data with xml 
+                // attributes
                 ChartObject chartObject = new ChartObject
                 {
                     tag = (int)obj.Attribute("tag"),
@@ -194,19 +221,30 @@ namespace bitclean
             // reset stats
             ResetStatisticsViews();
 
-            // add chart objects to chart display and get statistics on each chart object
+            // add chart objects to chart display and get statistics on each 
+            // chart object
             foreach (ChartObject obj in objects)
             {
                 try
                 {
-                    if (obj.decision == "object") // i screwed up my naming convention and don't feel like regenerating the data
+                    // i screwed up my naming convention and don't feel like 
+                    // regenerating the data
+                    if (obj.decision == "object")
                         obj.decision = "structure";
 
-                    store.AppendValues(obj.tag, obj.decision, obj.size, obj.avghue, obj.density, obj.edgeratio, obj.neighbors.Count, 0);
+                    store.AppendValues(obj.tag, obj.decision, obj.size, 
+                        obj.avghue, obj.density, obj.edgeratio, 
+                        obj.neighbors.Count, 0);
                     StatsTreeViews(obj);
                 }
                 catch (Exception excp)
                 {
+                    // display error to user
+                    errdialog.Text = "Error appending data row \n\n" +
+                        excp.Message;
+                    errdialog.Run();
+                    errdialog.Hide();
+
                     Console.WriteLine(excp.Message);
                 }
             }
@@ -220,23 +258,31 @@ namespace bitclean
         private void StatsTreeViews(ChartObject obj)
         {
             // if obj size|density|edgeratio|neighbors is min, set it so
-            if (obj.size < totalSizeStats.min || Math.Abs(totalSizeStats.min - -1.0) < UIConstants.EPSILON)
+            if (obj.size < totalSizeStats.min || 
+                Math.Abs(totalSizeStats.min - -1.0) < UIConstants.EPSILON)
                 totalSizeStats.min = obj.size;
-            if (obj.density < totalDensityStats.min || Math.Abs(totalDensityStats.min - -1.0) < UIConstants.EPSILON)
+            if (obj.density < totalDensityStats.min || 
+                Math.Abs(totalDensityStats.min - -1.0) < UIConstants.EPSILON)
                 totalDensityStats.min = obj.density;
-            if (obj.edgeratio < totalEdgeratioStats.min || Math.Abs(totalEdgeratioStats.min - -1.0) < UIConstants.EPSILON)
+            if (obj.edgeratio < totalEdgeratioStats.min || 
+                Math.Abs(totalEdgeratioStats.min - -1.0) < UIConstants.EPSILON)
                 totalEdgeratioStats.min = obj.edgeratio;
-            if (obj.neighbors.Count < totalNeighborsStats.min || Math.Abs(totalNeighborsStats.min - -1.0) < UIConstants.EPSILON)
+            if (obj.neighbors.Count < totalNeighborsStats.min || 
+                Math.Abs(totalNeighborsStats.min - -1.0) < UIConstants.EPSILON)
                 totalNeighborsStats.min = obj.neighbors.Count;
 
             // if obj size|density|edgeratio|neighbors is max, set it so
-            if (obj.size > totalSizeStats.max || Math.Abs(totalSizeStats.max - -1.0) < UIConstants.EPSILON)
+            if (obj.size > totalSizeStats.max || 
+                Math.Abs(totalSizeStats.max - -1.0) < UIConstants.EPSILON)
                 totalSizeStats.max = obj.size;
-            if (obj.density > totalDensityStats.max || Math.Abs(totalDensityStats.max - -1.0) < UIConstants.EPSILON)
+            if (obj.density > totalDensityStats.max || 
+                Math.Abs(totalDensityStats.max - -1.0) < UIConstants.EPSILON)
                 totalDensityStats.max = obj.density;
-            if (obj.edgeratio > totalEdgeratioStats.max || Math.Abs(totalEdgeratioStats.max - -1.0) < UIConstants.EPSILON)
+            if (obj.edgeratio > totalEdgeratioStats.max || 
+                Math.Abs(totalEdgeratioStats.max - -1.0) < UIConstants.EPSILON)
                 totalEdgeratioStats.max = obj.edgeratio;
-            if (obj.neighbors.Count > totalNeighborsStats.max || Math.Abs(totalNeighborsStats.max - -1.0) < UIConstants.EPSILON)
+            if (obj.neighbors.Count > totalNeighborsStats.max || 
+                Math.Abs(totalNeighborsStats.max - -1.0) < UIConstants.EPSILON)
                 totalNeighborsStats.max = obj.neighbors.Count;
 
             // add to average
@@ -248,22 +294,34 @@ namespace bitclean
             // if dust, update min/max/avg stats
             if (obj.decision == "dust")
             {
-                if (obj.size < dustSizeStats.min || Math.Abs(dustSizeStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.size < dustSizeStats.min || 
+                    Math.Abs(dustSizeStats.min - -1.0) < UIConstants.EPSILON)
                     dustSizeStats.min = obj.size;
-                if (obj.density < dustDensityStats.min || Math.Abs(dustDensityStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.density < dustDensityStats.min || 
+                    Math.Abs(dustDensityStats.min - -1.0) < UIConstants.EPSILON)
                     dustDensityStats.min = obj.density;
-                if (obj.edgeratio < dustEdgeratioStats.min || Math.Abs(dustEdgeratioStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.edgeratio < dustEdgeratioStats.min || 
+                    Math.Abs(dustEdgeratioStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     dustEdgeratioStats.min = obj.edgeratio;
-                if (obj.neighbors.Count < dustNeighborsStats.min || Math.Abs(dustNeighborsStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.neighbors.Count < dustNeighborsStats.min || 
+                    Math.Abs(dustNeighborsStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     dustNeighborsStats.min = obj.neighbors.Count;
 
-                if (obj.size > dustSizeStats.max || Math.Abs(dustSizeStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.size > dustSizeStats.max || 
+                    Math.Abs(dustSizeStats.max - -1.0) < UIConstants.EPSILON)
                     dustSizeStats.max = obj.size;
-                if (obj.density > dustDensityStats.max || Math.Abs(dustDensityStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.density > dustDensityStats.max || 
+                    Math.Abs(dustDensityStats.max - -1.0) < UIConstants.EPSILON)
                     dustDensityStats.max = obj.density;
-                if (obj.edgeratio > dustEdgeratioStats.max || Math.Abs(dustEdgeratioStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.edgeratio > dustEdgeratioStats.max || 
+                    Math.Abs(dustEdgeratioStats.max - -1.0) < 
+                        UIConstants.EPSILON)
                     dustEdgeratioStats.max = obj.edgeratio;
-                if (obj.neighbors.Count > dustNeighborsStats.max || Math.Abs(dustNeighborsStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.neighbors.Count > dustNeighborsStats.max || 
+                    Math.Abs(dustNeighborsStats.max - -1.0) <
+                        UIConstants.EPSILON)
                     dustNeighborsStats.max = obj.neighbors.Count;
 
                 dustSizeStats.avg += obj.size;
@@ -275,22 +333,38 @@ namespace bitclean
             }
             else
             { // update structure min/max/avg stats
-                if (obj.size < structureSizeStats.min || Math.Abs(structureSizeStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.size < structureSizeStats.min || 
+                    Math.Abs(structureSizeStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     structureSizeStats.min = obj.size;
-                if (obj.density < structureDensityStats.min || Math.Abs(structureDensityStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.density < structureDensityStats.min || 
+                    Math.Abs(structureDensityStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     structureDensityStats.min = obj.density;
-                if (obj.edgeratio < structureEdgeratioStats.min || Math.Abs(structureEdgeratioStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.edgeratio < structureEdgeratioStats.min || 
+                    Math.Abs(structureEdgeratioStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     structureEdgeratioStats.min = obj.edgeratio;
-                if (obj.neighbors.Count < structureNeighborsStats.min || Math.Abs(structureNeighborsStats.min - -1.0) < UIConstants.EPSILON)
+                if (obj.neighbors.Count < structureNeighborsStats.min || 
+                    Math.Abs(structureNeighborsStats.min - -1.0) < 
+                        UIConstants.EPSILON)
                     structureNeighborsStats.min = obj.neighbors.Count;
 
-                if (obj.size > structureSizeStats.max || Math.Abs(structureSizeStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.size > structureSizeStats.max || 
+                    Math.Abs(structureSizeStats.max - -1.0) < 
+                        UIConstants.EPSILON)
                     structureSizeStats.max = obj.size;
-                if (obj.density > structureDensityStats.max || Math.Abs(structureDensityStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.density > structureDensityStats.max || 
+                    Math.Abs(structureDensityStats.max - -1.0) < 
+                        UIConstants.EPSILON)
                     structureDensityStats.max = obj.density;
-                if (obj.edgeratio > structureEdgeratioStats.max || Math.Abs(structureEdgeratioStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.edgeratio > structureEdgeratioStats.max || 
+                    Math.Abs(structureEdgeratioStats.max - -1.0) < 
+                        UIConstants.EPSILON)
                     structureEdgeratioStats.max = obj.edgeratio;
-                if (obj.neighbors.Count > structureNeighborsStats.max || Math.Abs(structureNeighborsStats.max - -1.0) < UIConstants.EPSILON)
+                if (obj.neighbors.Count > structureNeighborsStats.max || 
+                    Math.Abs(structureNeighborsStats.max - -1.0) < 
+                        UIConstants.EPSILON)
                     structureNeighborsStats.max = obj.neighbors.Count;
 
                 structureSizeStats.avg += obj.size;
@@ -334,20 +408,34 @@ namespace bitclean
             duststatsStore.Clear();
 
             // create rows
-            allstatsStore.AppendValues("size", totalSizeStats.max, totalSizeStats.min, totalSizeStats.avg);
-            allstatsStore.AppendValues("density", totalDensityStats.max, totalDensityStats.min, totalDensityStats.avg);
-            allstatsStore.AppendValues("edge ratio", totalEdgeratioStats.max, totalEdgeratioStats.min, totalEdgeratioStats.avg);
-            allstatsStore.AppendValues("neighbors", totalNeighborsStats.max, totalNeighborsStats.min, totalNeighborsStats.avg);
+            allstatsStore.AppendValues("size", totalSizeStats.max, 
+                totalSizeStats.min, totalSizeStats.avg);
+            allstatsStore.AppendValues("density", totalDensityStats.max, 
+                totalDensityStats.min, totalDensityStats.avg);
+            allstatsStore.AppendValues("edge ratio", totalEdgeratioStats.max, 
+                totalEdgeratioStats.min, totalEdgeratioStats.avg);
+            allstatsStore.AppendValues("neighbors", totalNeighborsStats.max, 
+                totalNeighborsStats.min, totalNeighborsStats.avg);
 
-            structstatsStore.AppendValues("size", structureSizeStats.max, structureSizeStats.min, structureSizeStats.avg);
-            structstatsStore.AppendValues("density", structureDensityStats.max, structureDensityStats.min, structureDensityStats.avg);
-            structstatsStore.AppendValues("edge ratio", structureEdgeratioStats.max, structureEdgeratioStats.min, structureEdgeratioStats.avg);
-            structstatsStore.AppendValues("neighbors", structureNeighborsStats.max, structureNeighborsStats.min, structureNeighborsStats.avg);
+            structstatsStore.AppendValues("size", structureSizeStats.max, 
+                structureSizeStats.min, structureSizeStats.avg);
+            structstatsStore.AppendValues("density", structureDensityStats.max, 
+                structureDensityStats.min, structureDensityStats.avg);
+            structstatsStore.AppendValues("edge ratio", 
+                structureEdgeratioStats.max, structureEdgeratioStats.min, 
+                structureEdgeratioStats.avg);
+            structstatsStore.AppendValues("neighbors", 
+                structureNeighborsStats.max, structureNeighborsStats.min, 
+                structureNeighborsStats.avg);
 
-            duststatsStore.AppendValues("size", dustSizeStats.max, dustSizeStats.min, dustSizeStats.avg);
-            duststatsStore.AppendValues("density", dustDensityStats.max, dustDensityStats.min, dustDensityStats.avg);
-            duststatsStore.AppendValues("edge ratio", dustEdgeratioStats.max, dustEdgeratioStats.min, dustEdgeratioStats.avg);
-            duststatsStore.AppendValues("neighbors", dustNeighborsStats.max, dustNeighborsStats.min, dustNeighborsStats.avg);
+            duststatsStore.AppendValues("size", dustSizeStats.max, 
+                dustSizeStats.min, dustSizeStats.avg);
+            duststatsStore.AppendValues("density", dustDensityStats.max, 
+                dustDensityStats.min, dustDensityStats.avg);
+            duststatsStore.AppendValues("edge ratio", dustEdgeratioStats.max, 
+                dustEdgeratioStats.min, dustEdgeratioStats.avg);
+            duststatsStore.AppendValues("neighbors", dustNeighborsStats.max, 
+                dustNeighborsStats.min, dustNeighborsStats.avg);
 
         }
 
@@ -409,7 +497,8 @@ namespace bitclean
         /// <param name="e">E.</param>
         protected void OpenChartConfiguration(object sender, EventArgs e)
         {
-            UI.ChartConfiguration configwindow = new UI.ChartConfiguration(ref configuration);
+            UI.ChartConfiguration configwindow = 
+                new UI.ChartConfiguration(ref configuration);
             configwindow.Show();
         }
 
@@ -437,9 +526,9 @@ namespace bitclean
                 objectdata.Add(data);
             }
 
-            UI.Chart chart = new UI.Chart(objectdata, configuration, datatree.Columns);
+            UI.Chart chart = new UI.Chart(objectdata, configuration, 
+                datatree.Columns);
             chart.Show();
-
         }
 
         protected void RunSifter(object sender, EventArgs e)
